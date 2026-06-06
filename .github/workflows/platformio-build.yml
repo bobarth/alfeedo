@@ -92,5 +92,6 @@ jobs:
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: flasher
+        publish_dir: .
         destination_dir: ${{ env.BRANCH }}
+        exclude_assets: '.github,src,data,pcb,img,flasher/manifest-template.json,.gitignore,LICENSE,README.md,gzip_embeds.py,platformio.ini'
