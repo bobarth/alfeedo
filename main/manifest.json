@@ -6,7 +6,7 @@
     {
       "chipFamily": "ESP32",
       "parts": [
-        { "path": "../alfeedo-v1.0.0-main-merged.bin", "offset": 0 }
+        { "path": "alfeedo-v1.0.0-main-merged.bin", "offset": 0 }
       ]
     }
   ]
