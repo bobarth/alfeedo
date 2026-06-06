@@ -92,9 +92,5 @@ jobs:
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: .
+        publish_dir: flasher
         destination_dir: ${{ env.BRANCH }}
-        publish_files: |
-          flasher/index.html
-          flasher/manifest.json
-          alfeedo-v${{ env.VERSION }}-${{ env.BRANCH }}-merged.bin
