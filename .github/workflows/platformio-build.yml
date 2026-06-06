@@ -44,7 +44,7 @@ jobs:
     - name: Extract Version and Rename
       id: vars
       run: |
-        VERSION=$(grep "CATFEEDER_VERSION" platformio.ini | sed 's/.*\\\"\\(.*\\)\\\".*/\\1/' | tr -d '\\\\\\r\\n')
+        VERSION=$(grep "CATFEEDER_VERSION" platformio.ini | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
         echo "VERSION=$VERSION"
         echo "VERSION=$VERSION" >> $GITHUB_ENV
         cp .pio/build/esp32dev/firmware.bin alfeedo-v$VERSION-firmware.bin
