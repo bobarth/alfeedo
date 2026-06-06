@@ -33,7 +33,6 @@ jobs:
     - name: Merge Binaries
       run: |
         pip install esptool
-        # Adjust the paths and offsets to match your build logs!
         esptool.py --chip esp32 merge_bin \
           -o merged-firmware.bin \
           --flash_mode dio \
@@ -45,7 +44,7 @@ jobs:
     - name: Extract Version and Rename
       id: vars
       run: |
-        VERSION=$(grep "CATFEEDER_VERSION" platformio.ini | sed 's/.*\\"\(.*\)\\".*/\1/' | tr -d '\\\r\n')
+        VERSION=$(grep "CATFEEDER_VERSION" platformio.ini | sed 's/.*\\\"\\(.*\\)\\\".*/\\1/' | tr -d '\\\\\\r\\n')
         echo "VERSION=$VERSION"
         echo "VERSION=$VERSION" >> $GITHUB_ENV
         cp .pio/build/esp32dev/firmware.bin alfeedo-v$VERSION-firmware.bin
@@ -73,7 +72,7 @@ jobs:
 
     - name: Create Release
       uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/') # Only run on tagged version
+      if: startsWith(github.ref, 'refs/tags/')
       with:
         files: |
           alfeedo-v${{ env.VERSION }}-firmware.bin
@@ -81,9 +80,11 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Prepare Web Flasher Manifest
+    - name: Prepare Web Flasher
       run: |
-        # Update the manifest with the actual filenames and version
+        # Copy binary into the flasher folder so paths are relative and self-contained
+        cp alfeedo-v${{ env.VERSION }}-${{ env.BRANCH }}-merged.bin flasher/alfeedo-v${{ env.VERSION }}-${{ env.BRANCH }}-merged.bin
+        # Build manifest pointing to the local binary
         cp flasher/manifest-template.json flasher/manifest.json
         sed -i "s/FIRMWARE_FILE/alfeedo-v${{ env.VERSION }}-${{ env.BRANCH }}-merged.bin/g" flasher/manifest.json
         sed -i "s/LATEST/${{ env.VERSION }}/g" flasher/manifest.json
@@ -92,6 +93,5 @@ jobs:
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: .
+        publish_dir: flasher
         destination_dir: ${{ env.BRANCH }}
-        exclude_assets: '.github,src,data,pcb,img,flasher/manifest-template.json,.gitignore,LICENSE,README.md,gzip_embeds.py,platformio.ini'
