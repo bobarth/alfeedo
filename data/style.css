@@ -413,3 +413,48 @@ input[type="time"].input-field, .spinner {
     font-size: 10px;
     border-bottom: 1px solid #111;
 }
+
+/* ---- Readability pass: make every default-coloured element light on dark ---- */
+body {
+    color: var(--color-text-main);
+}
+
+p, span, label, output, td, th, li, small, legend, .label, .input-label {
+    color: var(--color-text-main);
+}
+
+a { color: var(--color-accent); }
+
+h2, h3, h4 { color: var(--color-text-main); }
+
+/* Dim helper text such as the firmware footer */
+.footer, .version, small { color: var(--color-text-dim); }
+
+/* Sliders, checkboxes, radios: use the cyan accent */
+input[type="range"] {
+    accent-color: var(--color-accent);
+    background: transparent;
+}
+input[type="checkbox"], input[type="radio"] {
+    accent-color: var(--color-accent);
+}
+
+/* Value read-outs next to sliders */
+output {
+    font-weight: 600;
+    color: var(--color-accent);
+}
+
+/* Tables (logs, timers) */
+table { border-collapse: collapse; width: 100%; }
+th { color: var(--color-text-dim); font-weight: 600; text-align: left; }
+td, th { border-color: var(--color-border); }
+tr { border-color: var(--color-border); }
+hr { border: none; border-top: 1px solid var(--color-border); }
+
+/* Native form controls on the dark panel */
+select, input, textarea, button { font-family: inherit; }
+input[type="time"], input[type="number"], input[type="text"], input[type="password"], select {
+    color-scheme: dark;
+}
+.radio-group label, .input-container label { color: var(--color-text-main); }
