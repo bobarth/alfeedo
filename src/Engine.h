@@ -85,6 +85,8 @@ class Engine {
     float minSpeed() const;
     float maxSpeed() const;
     void setSpeed(float speed);
+    bool motorReversed() const;
+    void setMotorReversed(bool reversed);
 
     float revolutionsPerPortion() const;
     float minRevolutionsPerPortion() const;
@@ -109,6 +111,7 @@ private:
     float m_revolutionsPerMeal = 0;
     float m_revolutionsPerSnack = 0;
     float m_speed = 0;
+    bool m_motorReversed = false;
     mutable Preferences m_prefs;
 
     std::vector<TimerEntry> m_timers;

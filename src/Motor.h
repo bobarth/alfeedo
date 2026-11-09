@@ -40,6 +40,8 @@ public:
   void move(float revolutions);
   void setSpeed(float speed);
   float getSpeed() const;
+  void setReversed(bool reversed);
+  bool isReversed() const;
   bool isMoving() const;
   int stallCount() const;
 
@@ -68,6 +70,7 @@ private:
   int m_uartRxPin = 0;
   int m_uartTxPin = 0;
   int m_diagPin = 0;
+  bool m_reversed = false;
 
 };
 

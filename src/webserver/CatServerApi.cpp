@@ -372,6 +372,7 @@ void CatServerApi::handleMotorSettings(AsyncWebServerRequest *request) {
         doc["minSpeed"] = m_engine->minSpeed();
         doc["maxSpeed"] = m_engine->maxSpeed();
         doc["speed"] = m_engine->speed();
+        doc["reversed"] = m_engine->motorReversed();
         doc["minRevolutionsPerPortion"] = m_engine->minRevolutionsPerPortion();
         doc["maxRevolutionsPerPortion"] = m_engine->maxRevolutionsPerPortion();
         doc["revolutionsPerPortion"] = m_engine->revolutionsPerPortion();
@@ -398,6 +399,7 @@ void CatServerApi::handleMotorSettingsBody(AsyncWebServerRequest *request, uint8
     JsonVariant speedVariant = input["speed"];
     JsonVariant revolutionsPerPortionVariant = input["revolutionsPerPortion"];
     JsonVariant revolutionsPerSnackVariant = input["revolutionsPerSnack"];
+    JsonVariant reversedVariant = input["reversed"];
     float speed = speedVariant.as<float>();
     float revolutionsPerPortion = revolutionsPerPortionVariant.as<float>();
     float revolutionsPerSnack = revolutionsPerSnackVariant.as<float>();
@@ -417,6 +419,9 @@ void CatServerApi::handleMotorSettingsBody(AsyncWebServerRequest *request, uint8
         return;
     }
 
+    if (!reversedVariant.isNull()) {
+        m_engine->setMotorReversed(reversedVariant.as<bool>());
+    }
     if (!speedVariant.isNull()) {
         m_engine->setSpeed(speed);
     }

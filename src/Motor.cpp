@@ -132,6 +132,21 @@ void Motor::setSpeed(float speed)
     m_stepper->setSpeedInHz(speed * MOTOR_STEPS_PER_REVOLUTION * MOTOR_MICROSTEPS);
 }
 
+void Motor::setReversed(bool reversed)
+{
+    m_reversed = reversed;
+    if (m_stepper) {
+        // dirHighCountsUp = true normally; false flips the rotation direction
+        m_stepper->setDirectionPin(m_directionPin, !reversed);
+    }
+    logInfo(lcMotor, String("Motor direction: ") + (reversed ? "reversed" : "normal"));
+}
+
+bool Motor::isReversed() const
+{
+    return m_reversed;
+}
+
 float Motor::getSpeed() const
 {
     return 1.0 * const_cast<FastAccelStepper *>(m_stepper)->getSpeedInMilliHz() / 1000 / MOTOR_STEPS_PER_REVOLUTION / MOTOR_MICROSTEPS; 

@@ -70,6 +70,12 @@
         >
     </form>
     </div>
+    <div class="info" style="display: block;">
+        <label style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+            <h3 style="margin: 0;">Reverse direction</h3>
+            <input type="checkbox" id="reversedCheck" %%REVERSED%% style="width: 22px; height: 22px; accent-color: var(--color-accent);" onchange="setReversed(this.checked)">
+        </label>
+    </div>
     <form action='/settings' method='GET'>
         <button class='btn secondary'>Back</button>
     </form>
@@ -80,6 +86,16 @@
     revolutionsPerSnackOutput = document.getElementById("revolutionsPerSnackOutput")
 
     
+    async function setReversed(reversed) {
+        const response = await fetch("/api/settings/motor", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({reversed: reversed})
+        });
+        if (!response.ok) {
+            alert("Failed to update motor direction");
+        }
+    }
     async function setSpeed(speed) {
         console.log("New speed setting: ", speed)
         const response = await fetch("/api/settings/motor", {

@@ -21,17 +21,23 @@ Copyright (C) 2025-2026 Michael Zanetti <michael_zanetti@gmx.net>
 
 LoggingCategory lcInput("Input");
 
-#define DEBOUNCE_DELAY 50 // milliseconds
+#define DEBOUNCE_DELAY 80 // milliseconds (touch pads: slightly longer than mechanical switches)
+#define BOOT_LOCKOUT 2000 // ignore presses for this long after boot (milliseconds)
 
 void Input::setup(uint8_t pin, InputHandler handler)
 {
     m_handler = handler;
     m_pin = pin;
 
-    pinMode(pin, INPUT);
+    // Internal pull-up so an unconnected or floating pin reads HIGH (not pressed)
+    pinMode(pin, INPUT_PULLUP);
+    delay(5);
 
-    m_buttonState = HIGH;
-    m_lastButtonState = HIGH;
+    // Start from the real pin level: a pin stuck LOW at boot must be released
+    // before it can trigger anything.
+    int initial = digitalRead(pin);
+    m_buttonState = initial;
+    m_lastButtonState = initial;
     m_lastDebounceTime = 0;
 
     logInfo(lcInput, "GPIO" + String(pin) + " set up.");
@@ -50,7 +56,7 @@ void Input::loop()
     if ((now - m_lastDebounceTime) > DEBOUNCE_DELAY) {
         if (reading != m_buttonState) {
             m_buttonState = reading;
-            if (m_buttonState == LOW) {
+            if (m_buttonState == LOW && now > BOOT_LOCKOUT) {
                 logDebug(lcInput, "Button (GPIO" + String(m_pin) + " pressed.");
                 m_handler();
             }

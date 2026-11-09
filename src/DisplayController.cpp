@@ -65,17 +65,24 @@ void DisplayController::setup(Engine *engine, FillSensor *fillSensor, OTAManager
 
     m_feedButton.setup(feedButtonPin, [this]() {
         logInfo(lcDisplay, "Feed button pressed");
+        if (!m_currentPage) {
+            // No display found: the feed button still dispenses a snack
+            m_engine->feed(Engine::FeedingMode::Snack);
+            return;
+        }
         m_currentPage->handleInput(this, m_engine, BUTTON_MENU);
         m_lastInteractionTime = time(nullptr);
     });
 
     m_nextButton.setup(nextButtonPin, [this]() {
         logInfo(lcDisplay, "Next button pressed");
+        if (!m_currentPage) return;
         m_currentPage->handleInput(this, m_engine, BUTTON_NEXT);
         m_lastInteractionTime = time(nullptr);
     });
     m_previousButton.setup(previousButtonPin, [this]() {
         logInfo(lcDisplay, "Previous button pressed");
+        if (!m_currentPage) return;
         m_currentPage->handleInput(this, m_engine, BUTTON_PREVIOUS);
         m_lastInteractionTime = time(nullptr);
     });
@@ -119,12 +126,11 @@ void DisplayController::setCurrentPage(Page *page)
 
 void DisplayController::loop()
 {
+    m_feedButton.loop();
+    m_previousButton.loop();
+    m_nextButton.loop();
+
     if (m_currentPage) {
-
-        m_feedButton.loop();
-        m_previousButton.loop();
-        m_nextButton.loop();
-
         time_t now = time(nullptr);
         if (m_currentPage->autoExit() && now - m_lastInteractionTime > 5) {
             time_t now = time(nullptr);

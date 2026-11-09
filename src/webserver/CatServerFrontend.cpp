@@ -293,6 +293,7 @@ void CatServerFrontend::handleNetworkChanged(AsyncWebServerRequest *request) {
 void CatServerFrontend::handleMotorSettings(AsyncWebServerRequest *request) {
     LOAD_EMBED_FILE(motorsettings_html);
     motorsettings_html_str.replace("%%SPEED%%", String(m_engine->speed()));
+    motorsettings_html_str.replace("%%REVERSED%%", m_engine->motorReversed() ? "checked" : "");
     motorsettings_html_str.replace("%%MIN_SPEED%%", String(m_engine->minSpeed()));
     motorsettings_html_str.replace("%%MAX_SPEED%%", String(m_engine->maxSpeed()));
     motorsettings_html_str.replace("%%REVOLUTIONS_PER_PORTION%%", String(m_engine->revolutionsPerPortion()));

@@ -61,6 +61,11 @@ void FillSensor::begin()
 void FillSensor::loop()
 {
     if (!m_initialized) {
+        static unsigned long lastRetry = 0;
+        if (millis() - lastRetry > 30000) {
+            lastRetry = millis();
+            begin();
+        }
         return;
     }
 

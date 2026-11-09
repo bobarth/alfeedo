@@ -44,6 +44,7 @@ void Engine::begin(TimeSource *timeSource, Motor *motor, FillSensor *fillSensor)
     m_revolutionsPerMeal = m_prefs.getFloat("revsPerMeal", 2);
     m_revolutionsPerSnack = m_prefs.getFloat("revsPerSnack", .2);
     m_speed = m_prefs.getFloat("speed", 1);
+    m_motorReversed = m_prefs.getBool("reversed", false);
     m_prefs.end();
 
     logInfo(lcEngine, "Loaded settings - revolutionsPerMeal: " + String(m_revolutionsPerMeal) + ", revolutionsPerSnack: " + String(m_revolutionsPerSnack) + ", speed: " + String(m_speed));
@@ -68,6 +69,7 @@ void Engine::begin(TimeSource *timeSource, Motor *motor, FillSensor *fillSensor)
         m_motor->begin();
 
         m_motor->setSpeed(m_speed);
+        m_motor->setReversed(m_motorReversed);
     }
 
 }
@@ -209,6 +211,22 @@ void Engine::setSpeed(float speed)
     m_prefs.begin("catfeeder", false);
     m_prefs.putFloat("speed", speed);
     m_prefs.end();
+}
+
+bool Engine::motorReversed() const
+{
+    return m_motorReversed;
+}
+
+void Engine::setMotorReversed(bool reversed)
+{
+    m_motorReversed = reversed;
+    m_prefs.begin("catfeeder", false);
+    m_prefs.putBool("reversed", reversed);
+    m_prefs.end();
+    if (m_motor) {
+        m_motor->setReversed(reversed);
+    }
 }
 
 void Engine::setRevolutionsPerPortion(float revolutions)
